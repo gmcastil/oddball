@@ -72,6 +72,8 @@ but I haven't tested it.  To run from a command prompt, type:
 
     oddball [options] [file]
 
+where `[file]` is your input 6502 assembly source code.  Some supported options are:
+
     `-c`, `--coe-only`  Generates the interim coefficients file instead of a .mif
                         file.  Possibly useful for manually hacking of source code.
     -m, --with-map      Use this file to place additional data into memory
