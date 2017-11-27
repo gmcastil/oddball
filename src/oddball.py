@@ -7,6 +7,42 @@ from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
 
+opcodes = {
+
+    'adc' :
+
+    }
+
+class Block(object):
+    """Organize blocks of source code for assembling
+
+    Args:
+      offset (int): Absolute offset address
+      source (list): List of tuples, each contains a line number and instruction
+
+    """
+    def __init__(self, offset, source):
+        self.offset = offset
+        self.source = source
+
+        self._symbols = dict()
+        self._code = None
+        self._bytes = 0
+
+    def __len__(self):
+        return self._bytes
+
+    def assemble(self):
+        pass
+
+    def _first_pass(self):
+        pass
+
+    def _second_pass(self):
+        pass
+
+
+
 def stripped(filename):
     """Generates a sequence of source code lines without comments or whitespace
 
@@ -36,8 +72,8 @@ def stripped(filename):
             line = SourceLine(number, code)
             yield line
 
-def code_blocks(filename):
-    """Extracts blocks of source code separated by and .org directive
+def extract_code(filename):
+    """Extracts blocks of source code delineated by .org directives
 
     Args:
       filename (str): Source code filename
@@ -53,11 +89,13 @@ def code_blocks(filename):
         # This requires that an .org directive appear before any code...
         if is_origin(line.code):
             directive, offset = line.code.split()
-            blocks[offset] = []
+            # Peel off the leading '$' from the source file
+            offset = int(offset[1:], 16)
+            blocks[offset] = list()
         # ...otherwise this line throws a NameError
         else:
             blocks[offset].append(line)
-    return blocks
+    return [Block(offset, blocks[offset]) for offset in sorted(blocks.keys())]
 
 def is_origin(line):
     """Returns True if line is a valid origin directive
@@ -75,28 +113,8 @@ def is_origin(line):
         status = True
     return status
 
-def first_pass(code, pc=0):
-    """Builds a symbol table containing label names and addresses
-
-    Args:
-      code (iter) - Iterable of lines of source code
-      pc (int) - Program counter initial value
-
-    Returns:
-      dict - Labels mapped to absolute addresses
-
-    """
-    symbol_table = dict()
-    for address, line in enumerate(code, pc):
-        if len(line.code.split(':')) > 1:
-            label = line.code.split(':')[0]
-            symbol_table[label] = address
-    return symbol_table
-
 def main(args):
-    blocks = code_blocks('../roms/test.rom')
-
-
+    blocks = extract_code('../roms/test.rom')
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
