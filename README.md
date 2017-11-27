@@ -1,12 +1,11 @@
-oddball - a very strange 6502 assembler
-=======================================
+# Oddball - a very strange 6502 assembler
 
 Oddball is an assembler for the MOS Technology 6502 microprocessor.  Instead of
 generating raw machine code intended to be run on the actual hardware, Oddball
 produces memory maps that are intended to be used by a simulator.
 
-Purpose
---------
+# Purpose
+
 
 Recently, I've been developing a hardware model of the MOS Technology 6502
 microprocessor in Verilog, targeting a Xilinx 7-Series field-programmable gate
@@ -26,7 +25,7 @@ instructions and data. Inefficient and error prone to say the least. As the
 number of addressing modes I implemented began to increase, it became apparent
 that there was an obviously better way.
 
-Notes
+# Notes
 -----
 
 Oddball parses assembly language of the following form:
@@ -68,14 +67,14 @@ This would place the value $33 and $ff at addresses $9000 and $9001
 respectively.  Depending upon how annoying I find maintaining two different
 source files, I may implement some additional directives in the future.
 
-Usage
------
+# Usage
+
 Oddball was developed on Python 3.6 and may run just fine on earlier versions,
 but I haven't tested it.  To run from a command prompt, type:
 
   oddball [options] [file]
 
-Options:
+## Options
 
   `-c`, `--coe-only`: Generates the interim coefficients file instead of a .mif
   file.  Possibly useful for manually hacking of source code.
