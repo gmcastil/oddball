@@ -22,7 +22,8 @@ I had originally been creating these manually, using some simple Python scripts
 to generate 64KB .coe files filled with NOP instructions, and then hand placing
 instructions and data. Inefficient and error prone to say the least. As the
 number of addressing modes I implemented began to increase, it became apparent
-that there was an obviously better way.
+that there was an obviously better way.  So naturally, I realized I should just
+write my own assembler.
 
 ## Notes
 
@@ -74,7 +75,7 @@ but I haven't tested it.  To run from a command prompt, type:
 
     oddball [options] [file]
 
-where `[file]` is your input 6502 assembly source code.  Some supported options are:
+where `file` is your input 6502 assembly source code.  Some supported options are:
 
     `-c`, `--coe-only`  Generates the interim coefficients file instead of a .mif
                         file.  Possibly useful for manually hacking of source code.
