@@ -15,7 +15,11 @@ Xilinx Vivado Design Suite and then use the block memory behavioral model, my
 6502 core, and a testbench to drive the whole thing. Optionally, the initial
 contents of the block memory can be provided to Vivado when the IP is generated
 through a coefficients (.coe) file. The tool then converts the coefficients file
-to a memory initialization file (.mif) for simulation.  See Xilinx PG058
+to a memory initialization file (.mif) for simulation.  See [Xilinx
+PG058](https://www.xilinx.com/support/documentation/ip_documentation/blk_mem_gen/v8_3/pg058-blk-mem-gen.pdf)
+for more details about the block memory generator and the .coe and .mif file
+formats.
+
 these file format
 
 I had originally been creating these manually, using some simple Python scripts
