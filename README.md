@@ -29,9 +29,11 @@ that there was an obviously better way.
 Oddball parses assembly language of the following form:
 
 ```assembly
+;; Commented text here
+
           .org   $8000
 
-label:    lda    $9000        ;; comment text
+label:    lda    $9000        ;; More comment text
           clc
           lda    #$01
 ```
