@@ -31,7 +31,7 @@ Notes
 
 Oddball parses assembly language of the following form:
 
-```asm
+```assembly
           .org   $8000
 
 label:    lda    $9000        ;; comment text
@@ -39,5 +39,47 @@ label:    lda    $9000        ;; comment text
           lda    #$01
 ```
 
+Currently, the only supported assembler directive is `.org` which sets the
+current origin to a new value.  This is used to set the program counter during
+assembly. For example, the previous code snippet would instruct the assembler to
+start placing code at address $8000.  At least one instance of this directive is
+required to indicate where to begin placing opcodes, data, and addresses.  If
+more than one occurrence of `.org` is found in the source code, the assembler
+will treat the instructions following each instance separately.
+
+Since this is a strange use case, there are a couple of additional caveats:
+
+* The assembled output will always be 64KB in size, since that is the size of
+  the 6502 address space
+* All non-program bytes will be populated with NOP (0xEA) opcodes
+* Since the purpose of the output is to simulate the 6502 address space,
+  additional bytes will appear in the output, notably the address of the reset
+  vector and interrupt handling routines in addresses $fffa through $ffff.
+* Because the intent of the output products is to verify hardware behavior, no
+  support for macros exists.
+
+If additional data are desired to be place in memory, a `.map` file of the
+following format can be provided as well:
+
+    $9000: $33
+    $9001: $ff
+
+This would place the value $33 and $ff at addresses $9000 and $9001
+respectively.  Depending upon how annoying I find maintaining two different
+source files, I may implement some additional directives in the future.
+
 Usage
 -----
+Oddball was developed on Python 3.6 and may run just fine on earlier versions,
+but I haven't tested it.  To run from a command prompt, type:
+
+  oddball [options] [file]
+
+Options:
+
+  -c, --coe-only    Generates the interim coefficients file instead of a
+                    .mif file.  Possibly useful for manually hacking of source
+                    code.
+  -m, --with-map    Use this file to place additional data into memory
+  -o, --output      Output filename to use (optional).  Default is to use the
+                    input filename with .mif
