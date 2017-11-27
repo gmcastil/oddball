@@ -58,6 +58,34 @@ Since this is a strange use case, there are a couple of additional caveats:
 * Because the intent of the output products is to verify hardware behavior, no
   support for macros exists.
 
+An important detail here regarding labels - all relative branch instructions
+must be contained within the same code block defined by a `.org` directive.
+This, for example, is not allowed
+
+```assembly
+
+          ;; First code block
+
+          .org   $8000
+
+label1:   lda    #$01
+          clc
+          lda    #$01
+          bne    label1
+
+          ;; Second code block
+
+          .org   $9000
+          lda    #$01
+          clc
+          lda    #$01
+          bcc    label1
+```
+
+Since each block of code is treated independently, this would cause an error
+since that particular label is not defined.  If this turns out to be a problem,
+I'll probably have to rewrite some portion of the assembler.
+
 If additional data are desired to be place in memory, a `.map` file of the
 following format can be provided as well:
 
