@@ -77,9 +77,8 @@ but I haven't tested it.  To run from a command prompt, type:
 
 Options:
 
-  -c, --coe-only    Generates the interim coefficients file instead of a
-                    .mif file.  Possibly useful for manually hacking of source
-                    code.
+  `-c`, `--coe-only`: Generates the interim coefficients file instead of a .mif
+  file.  Possibly useful for manually hacking of source code.
   -m, --with-map    Use this file to place additional data into memory
   -o, --output      Output filename to use (optional).  Default is to use the
                     input filename with .mif
