@@ -15,18 +15,8 @@ Xilinx Vivado Design Suite and then use the block memory behavioral model, my
 6502 core, and a testbench to drive the whole thing. Optionally, the initial
 contents of the block memory can be provided to Vivado when the IP is generated
 through a coefficients (.coe) file. The tool then converts the coefficients file
-to a memory initialization file (.mif) for simulation.
-
-Here is what a basic .coe file might look like
-
-.. code:: text
-
-;; Distributed Memory Generator COE file
-;;      Address Size = 65536
-;;      Page Size = 4096
-memory_initialization_radix = 16;
-memory_initialization_vector =
-ad 00 90 18 b8 a9 01 6d 01 90 18 b8 a9 01 6d 02 90 18 b8 a9 7f 6d 01 90 18 b8 a9 80 6d 02 90 a9 55 2d 03 90 a9 ff 2d 04 90 a9 22 2d 05 90 18 0e 06 90 38 0e 06 90 a9 ff 2c 07 90 b8 a9 00 2c 07
+to a memory initialization file (.mif) for simulation.  See Xilinx PG058
+these file format
 
 I had originally been creating these manually, using some simple Python scripts
 to generate 64KB .coe files filled with NOP instructions, and then hand placing
