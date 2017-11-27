@@ -20,10 +20,24 @@ PG058](https://www.xilinx.com/support/documentation/ip_documentation/blk_mem_gen
 for more details about the block memory generator and the .coe and .mif file
 formats.
 
-these file format
-
 I had originally been creating these manually, using some simple Python scripts
 to generate 64KB .coe files filled with NOP instructions, and then hand placing
 instructions and data. Inefficient and error prone to say the least. As the
 number of addressing modes I implemented began to increase, it became apparent
 that there was an obviously better way.
+
+Notes
+-----
+
+Oddball parses assembly language of the following form:
+
+```asm
+          .org   $8000
+
+label:    lda    $9000        ;; comment text
+          clc
+          lda    #$01
+```
+
+Usage
+-----
