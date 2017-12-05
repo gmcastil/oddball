@@ -1,4 +1,4 @@
-# Oddball - a very strange 6502 assembler
+# Oddball - A very strange 6502 assembler
 
 Oddball is an assembler for the MOS Technology 6502 microprocessor.  Instead of
 generating raw machine code intended to be run on the actual hardware, Oddball
