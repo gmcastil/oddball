@@ -48,39 +48,112 @@ opcodes = {
 
     # Branch instructions
     'bpl' : {
-        'imp'   : (0x10)
+        'rel'   : (0x10)
         },
 
     'bmi' : {
-        'imp'   : (0x30)
+        'rel'   : (0x30)
         },
 
     'bvc' : {
-        'imp'   : (0x50)
+        'rel'   : (0x50)
         },
 
-    'bvc' : {
-        'imp'   : (0x70)
+    'bvs' : {
+        'rel'   : (0x70)
         },
 
     'bcc' : {
-        'imp'   : (0x90)
+        'rel'   : (0x90)
         },
 
     'bcs' : {
-        'imp'   : (0xb0)
+        'rel'   : (0xb0)
         },
 
     'bne' : {
-        'imp'   : (0xd0)
+        'rel'   : (0xd0)
         },
 
     'beq' : {
-        'imp'   : (0xf0)
+        'rel'   : (0xf0)
         },
 
     'brk' : {
-        'imp'
+        'imp'   : (0x00)
+        },
+
+    'cmp' : {
+        'imm'   : (0xc9),
+        'zp'    : (0xc5),
+        'zp x'  : (0xd5),
+        'abs'   : (0xcd),
+        'abs x' : (0xdd),
+        'abs y' : (0xd9),
+        'ind x' : (0xc1),
+        'ind y' : (0xd1)
+        },
+
+    'cpx' : {
+        'imm'   : (0xe0),
+        'zp'    : (0xe4),
+        'abs'   : (0xec)
+        },
+
+    'cpy' : {
+        'imm'   : (0xc0),
+        'zp'    : (0xc4),
+        'abs'   : (0xcc)
+        },
+
+    'dec' : {
+        'zp'    : (0xc6),
+        'zp x'  : (0xd6),
+        'abs'   : (0xce),
+        'abs x' : (0xde)
+        },
+
+    'eor' : {
+        'imm'   : (0x49),
+        'zp'    : (0x45),
+        'zp x'  : (0x55),
+        'abs'   : (0x4d),
+        'abs x' : (0x5d),
+        'abs y' : (0x59),
+        'ind x' : (0x41),
+        'ind y' : (0x51)
+        },
+
+    'clc' : {
+        'imm'   : (0x18)
+        },
+
+    'sec' : {
+        'imm'   : (0x38)
+        },
+
+    'cli' : {
+        'imm'   : (0x58)
+        },
+
+    'sei' : {
+        'imm'   : (0x78)
+        },
+
+    'clv' : {
+        'imm'   : (0xb8)
+        },
+
+    'cld' : {
+        'imm'   : (0xd8)
+        },
+
+    'sed' : {
+        'imm'   : (0xf8)
+        },
+
+    }
+
 
     }
 
