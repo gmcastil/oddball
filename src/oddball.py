@@ -7,9 +7,80 @@ from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
 
+
+
 opcodes = {
 
-    'adc' :
+    'adc' : {
+        'imm'   : (0x69),
+        'zp'    : (0x65),
+        'zp x'  : (0x75),
+        'abs'   : (0x6d),
+        'abs x' : (0x7d),
+        'abs y' : (0x79),
+        'ind x' : (0x61),
+        'ind y' : (0x71)
+        },
+
+    'and' : {
+        'imm'   : (0x29),
+        'zp'    : (0x25),
+        'zp x'  : (0x35),
+        'abs'   : (0x2d),
+        'abs x' : (0x3d),
+        'abs y' : (0x39),
+        'ind x' : (0x21),
+        'ind y' : (0x31)
+        },
+
+    'asl' : {
+        'acc'   : (0x0a),
+        'zp'    : (0x06),
+        'zp x'  : (0x16),
+        'abs'   : (0x0e),
+        'abs x' : (0x1e)
+        },
+
+    'bit' : {
+        'zp'    : (0x24),
+        'abs'   : (0x2c)
+        },
+
+    # Branch instructions
+    'bpl' : {
+        'imp'   : (0x10)
+        },
+
+    'bmi' : {
+        'imp'   : (0x30)
+        },
+
+    'bvc' : {
+        'imp'   : (0x50)
+        },
+
+    'bvc' : {
+        'imp'   : (0x70)
+        },
+
+    'bcc' : {
+        'imp'   : (0x90)
+        },
+
+    'bcs' : {
+        'imp'   : (0xb0)
+        },
+
+    'bne' : {
+        'imp'   : (0xd0)
+        },
+
+    'beq' : {
+        'imp'   : (0xf0)
+        },
+
+    'brk' : {
+        'imp'
 
     }
 
@@ -42,12 +113,17 @@ class Block(object):
         pass
 
 
+def parse_addr_mode(opcode, operands):
+    """
+
+    """
+
 
 def stripped(filename):
     """Generates a sequence of source code lines without comments or whitespace
 
     Args:
-      lines (iter) - Iterable of lines of source, probably from an .asm file
+      filename (str) - Filename to strip of whitespace and comments
 
     Yields:
       tuple - Line numbers and instructions or assembler directives
