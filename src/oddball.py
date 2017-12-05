@@ -265,9 +265,71 @@ opcodes = {
         'abs'     : (0x6e),
         'abs y'   : (0x7e)
         },
-}
 
+    'rti' : {
+        'imp'     : (0x40)
+        },
 
+    'rts' : {
+        'imp'     : (0x60)
+        },
+
+    'sbc' : {
+        'imm'     : (0xe9),
+        'zp'      : (0xe5),
+        'zp x'    : (0xf5),
+        'abs'     : (0xed),
+        'abs x'   : (0xfd),
+        'abs y'   : (0xf9),
+        'ind x'   : (0xe1),
+        'ind y'   : (0xf1)
+        },
+
+    'sta' : {
+        'zp'      : (0x85),
+        'zp x'    : (0x95),
+        'abs'     : (0x8d),
+        'abs x'   : (0x9d),
+        'abs y'   : (0x99),
+        'ind x'   : (0x81),
+        'ind y'   : (0x91)
+        },
+
+    'txs' : {
+        'imp'     : (0x9a)
+        },
+
+    'tsx' : {
+        'imp'     : (0xba)
+        },
+
+    'pha' : {
+        'imp'     : (0x48)
+        },
+
+    'pla' : {
+        'imp'     : (0x68)
+        },
+
+    'php' : {
+        'imp'     : (0x08)
+        },
+
+    'plp' : {
+        'imp'     : (0x28)
+        },
+
+    'stx' : {
+        'zp'      : (0x86),
+        'zp y'    : (0x96),
+        'abs'     : (0x8e)
+        },
+
+    'sty' : {
+        'zp'      : (0x84),
+        'zp x'    : (0x94),
+        'abs'     : (0x8c)
+        }
     }
 
 class Block(object):
