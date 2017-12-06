@@ -161,7 +161,7 @@ opcodes = {
 
     'jmp' : {
         'abs'     : (0x4c),
-        'abs ind' : (0x6c)
+        'ind'     : (0x6c)
         },
 
     'jsr' : {
@@ -361,10 +361,41 @@ class Block(object):
         pass
 
 
-def parse_addr_mode(opcode, operands):
-    """
+def parse_addr_mode(operands):
+    """Determines addressing mode based  on format of operands passed to it
+
+    Args:
+      operands (str): Operands from an instruction
+
+    Returns:
+      str - Addressing mode to use for looking up opcodes and values to place
 
     """
+    # Start by getting rid of any surviving whitespace and lowering everything
+    operands = operands.lower().strip()
+
+    # Use this to identify syntax errors
+    mode = None
+    # Check for implied addressing mode first
+    if not operands:
+        mode = 'imp'
+    # Check for immediate addressing mode
+    elif operands.startswith('#'):
+        mode = 'imm'
+    # Check for indirect modes
+    elif operands.startswith('('):
+        if operands.endswith(')'):
+            # Indirect X
+            mode = 'ind x'
+        elif operands.endswith('y'):
+            # Indirect Y
+            mode = 'ind y'
+        else:
+            # Syntax error
+            mode = None
+    #
+
+
 
 
 def stripped(filename):
