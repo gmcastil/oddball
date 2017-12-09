@@ -253,17 +253,17 @@ opcodes = {
     'rol' : {
         'acc'     : (0x2a),
         'zp'      : (0x26),
-        'zp y'    : (0x36),
+        'zp x'    : (0x36),
         'abs'     : (0x2e),
-        'abs y'   : (0x3e)
+        'abs x'   : (0x3e)
         },
 
     'ror' : {
         'acc'     : (0x6a),
         'zp'      : (0x66),
-        'zp y'    : (0x76),
+        'zp x'    : (0x76),
         'abs'     : (0x6e),
-        'abs y'   : (0x7e)
+        'abs x'   : (0x7e)
         },
 
     'rti' : {
