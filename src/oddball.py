@@ -1,13 +1,27 @@
 """
 A very strange assembler for the MOS 6502 instruction set
 
+Addressing modes are assumed to have the following format:
+
+Mode              Syntax            Length     Notes
+----              ------            ------     -----
+Accumulator       ROL A             1
+Relative          BPL label         2          Can also give immediate value
+Implied           BRK               1
+Immediate         ADC #$44          2
+Zero page         ADC $44           2
+Zero page, X      ADC $44, X        2
+Absolute          ADC $4400         3
+Absolute, X       ADC $4400, X      3
+Absolute, Y       ADC $4400, Y      3
+Indirect, X       ADC ($44, X)      2
+Indirect, Y       ADC ($44), X      2
+
 """
 import sys
 from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
-
-
 
 opcodes = {
 
