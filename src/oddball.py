@@ -251,7 +251,7 @@ opcodes = {
         },
 
     'rol' : {
-        'imm'     : (0x2a),
+        'acc'     : (0x2a),
         'zp'      : (0x26),
         'zp y'    : (0x36),
         'abs'     : (0x2e),
@@ -259,7 +259,7 @@ opcodes = {
         },
 
     'ror' : {
-        'imm'     : (0x6a),
+        'acc'     : (0x6a),
         'zp'      : (0x66),
         'zp y'    : (0x76),
         'abs'     : (0x6e),
@@ -343,18 +343,22 @@ class Block(object):
     def __init__(self, offset, source):
         self.offset = offset
         self.source = source
+        self.exec_code = None
 
+        # Symbol table for storing interim results
         self._symbols = dict()
-        self._code = None
-        self._bytes = 0
+        # Interim object code created during the first pass
+        self._object_code = list()
 
     def __len__(self):
-        return self._bytes
+        return len(self._exec_code)
 
     def assemble(self):
-        pass
+        self._object_code = self.first_pass()
+        self.exec_code = self._second_pass()
 
     def _first_pass(self):
+        object_code = []
         pass
 
     def _second_pass(self):
