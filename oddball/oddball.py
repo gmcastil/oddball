@@ -15,7 +15,7 @@ Absolute          ADC $4400         3
 Absolute, X       ADC $4400, X      3
 Absolute, Y       ADC $4400, Y      3
 Indirect, X       ADC ($44, X)      2
-Indirect, Y       ADC ($44), X      2
+Indirect, Y       ADC ($44), Y      2
 
 """
 import sys
