@@ -1,7 +1,7 @@
 import unittest
 from oddball import oddball
 
-class TestOddballParseInstruction(unittest.TestCase):
+class TestParseInstruction(unittest.TestCase):
     """Verify that source lines are parsed correctly with and without labels"""
 
     def test_accumulator(self):
@@ -136,7 +136,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
 
-class TestOddballParseAddress(unittest.TestCase):
+class TestParseAddress(unittest.TestCase):
     """Verify that addressing modes are inferred correctly from operands"""
 
     def test_accumulator(self):
@@ -215,6 +215,67 @@ class TestOddballParseAddress(unittest.TestCase):
         expected = 'ind y'
         result = oddball.parse_addr_mode(operands)
         self.assertEqual(expected, result)
+
+
+class TestLowerByte(unittest.TestCase):
+    """Test that lower bytes are returned correctly"""
+    def test_low_bytes(self):
+
+        # Test one byte modes
+
+        # Accumulator
+        expected = ''
+        low_byte_result = oddball.LOWER_BYTE['acc']('a')
+        self.assertEqual(expected, low_byte_result)
+        # Implied
+        expected = ''
+        low_byte_result = oddball.LOWER_BYTE['imp']('')
+        self.assertEqual(expected, low_byte_result)
+
+        # Test two byte modes
+
+        # Relative
+        expected = 'test_label'
+        low_byte_result = oddball.LOWER_BYTE['rel']('test_label')
+        self.assertEqual(expected, low_byte_result)
+
+        # Immediate
+        expected = '34'
+        low_byte_result = oddball.LOWER_BYTE['imm']('#$34')
+        self.assertEqual(expected, low_byte_result)
+
+        # Zero page
+        low_byte_result = oddball.LOWER_BYTE['zp']('$34')
+        self.assertEqual(expected, low_byte_result)
+
+        # Zero page, X
+        low_byte_result = oddball.LOWER_BYTE['zp x']('$34,x')
+        self.assertEqual(expected, low_byte_result)
+
+        # Indirect, X
+        low_byte_result = oddball.LOWER_BYTE['ind x']('($34,x)')
+        self.assertEqual(expected, low_byte_result)
+
+        # Indirect, Y
+        low_byte_result = oddball.LOWER_BYTE['ind y']('($34),y')
+        self.assertEqual(expected, low_byte_result)
+
+        # Test three byte modes
+
+        # Absolute
+        low_byte_result = oddball.LOWER_BYTE['abs']('$1234')
+        self.assertEqual(expected, low_byte_result)
+
+        # Absolute, X
+        low_byte_result = oddball.LOWER_BYTE['abs x']('$1234,x')
+        self.assertEqual(expected, low_byte_result)
+
+        # Absolute, Y
+        low_byte_result = oddball.LOWER_BYTE['abs y']('$1234,y')
+        self.assertEqual(expected, low_byte_result)
+
+class TestUpperByte(unittest.TestCase):
+    """Test that upper bytes are returned correctly"""
 
 
 if __name__ == "__main__":

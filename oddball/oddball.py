@@ -10,12 +10,12 @@ Relative          BPL label         2
 Implied           BRK               1
 Immediate         ADC #$44          2
 Zero page         ADC $44           2
-Zero page, X      ADC $44, X        2
+Zero page, X      ADC $44,X         2
 Absolute          ADC $4400         3
-Absolute, X       ADC $4400, X      3
-Absolute, Y       ADC $4400, Y      3
-Indirect, X       ADC ($44, X)      2
-Indirect, Y       ADC ($44), Y      2
+Absolute, X       ADC $4400,X       3
+Absolute, Y       ADC $4400,Y       3
+Indirect, X       ADC ($44,X)       2
+Indirect, Y       ADC ($44),Y       2
 
 """
 import sys
@@ -25,13 +25,13 @@ from collections import namedtuple
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
 
 # Functions to apply to operands for the lower byte
-lower_byte = {
-        'acc'     : lambda s: ''
+LOWER_BYTE = {
+        'acc'     : lambda s: '',
         'imm'     : lambda s: s.strip('#$'),
         'rel'     : lambda s: s,
         'imp'     : lambda s: '',
         'zp'      : lambda s: s.strip('$'),
-        'zp x'    : lambda s: s,
+        'zp x'    : lambda s: s[1:3],
         'abs'     : lambda s: s[3:5],
         'abs x'   : lambda s: s[3:5],
         'abs y'   : lambda s: s[3:5],
@@ -40,7 +40,7 @@ lower_byte = {
     }
 
 # Functions to apply to operands for the upper byte
-upper_byte = {
+UPPER_BYTE = {
         'acc'     : lambda s: '',
         'imm'     : lambda s: '',
         'rel'     : lambda s: '',
@@ -54,326 +54,326 @@ upper_byte = {
         'ind y'   : lambda s: ''
     }
 
-opcodes = {
+OPCODES = {
 
     'adc' : {
-        'imm'     : (0x69),
-        'zp'      : (0x65),
-        'zp x'    : (0x75),
-        'abs'     : (0x6d),
-        'abs x'   : (0x7d),
-        'abs y'   : (0x79),
-        'ind x'   : (0x61),
-        'ind y'   : (0x71)
+        'imm'     : 0x69,
+        'zp'      : 0x65,
+        'zp x'    : 0x75,
+        'abs'     : 0x6d,
+        'abs x'   : 0x7d,
+        'abs y'   : 0x79,
+        'ind x'   : 0x61,
+        'ind y'   : 0x71
         },
 
     'and' : {
-        'imm'     : (0x29),
-        'zp'      : (0x25),
-        'zp x'    : (0x35),
-        'abs'     : (0x2d),
-        'abs x'   : (0x3d),
-        'abs y'   : (0x39),
-        'ind x'   : (0x21),
-        'ind y'   : (0x31)
+        'imm'     : 0x29,
+        'zp'      : 0x25,
+        'zp x'    : 0x35,
+        'abs'     : 0x2d,
+        'abs x'   : 0x3d,
+        'abs y'   : 0x39,
+        'ind x'   : 0x21,
+        'ind y'   : 0x31
         },
 
     'asl' : {
-        'acc'     : (0x0a),
-        'zp'      : (0x06),
-        'zp x'    : (0x16),
-        'abs'     : (0x0e),
-        'abs x'   : (0x1e)
+        'acc'     : 0x0a,
+        'zp'      : 0x06,
+        'zp x'    : 0x16,
+        'abs'     : 0x0e,
+        'abs x'   : 0x1e
         },
 
     'bit' : {
-        'zp'      : (0x24),
-        'abs'     : (0x2c)
+        'zp'      : 0x24,
+        'abs'     : 0x2c
         },
 
     # Branch instructions
     'bpl' : {
-        'rel'     : (0x10)
+        'rel'     : 0x10
         },
 
     'bmi' : {
-        'rel'     : (0x30)
+        'rel'     : 0x30
         },
 
     'bvc' : {
-        'rel'     : (0x50)
+        'rel'     : 0x50
         },
 
     'bvs' : {
-        'rel'     : (0x70)
+        'rel'     : 0x70
         },
 
     'bcc' : {
-        'rel'     : (0x90)
+        'rel'     : 0x90
         },
 
     'bcs' : {
-        'rel'     : (0xb0)
+        'rel'     : 0xb0
         },
 
     'bne' : {
-        'rel'     : (0xd0)
+        'rel'     : 0xd0
         },
 
     'beq' : {
-        'rel'     : (0xf0)
+        'rel'     : 0xf0
         },
 
     'brk' : {
-        'imp'     : (0x00)
+        'imp'     : 0x00
         },
 
     'cmp' : {
-        'imm'     : (0xc9),
-        'zp'      : (0xc5),
-        'zp x'    : (0xd5),
-        'abs'     : (0xcd),
-        'abs x'   : (0xdd),
-        'abs y'   : (0xd9),
-        'ind x'   : (0xc1),
-        'ind y'   : (0xd1)
+        'imm'     : 0xc9,
+        'zp'      : 0xc5,
+        'zp x'    : 0xd5,
+        'abs'     : 0xcd,
+        'abs x'   : 0xdd,
+        'abs y'   : 0xd9,
+        'ind x'   : 0xc1,
+        'ind y'   : 0xd1
         },
 
     'cpx' : {
-        'imm'     : (0xe0),
-        'zp'      : (0xe4),
-        'abs'     : (0xec)
+        'imm'     : 0xe0,
+        'zp'      : 0xe4,
+        'abs'     : 0xec
         },
 
     'cpy' : {
-        'imm'     : (0xc0),
-        'zp'      : (0xc4),
-        'abs'     : (0xcc)
+        'imm'     : 0xc0,
+        'zp'      : 0xc4,
+        'abs'     : 0xcc
         },
 
     'dec' : {
-        'zp'      : (0xc6),
-        'zp x'    : (0xd6),
-        'abs'     : (0xce),
-        'abs x'   : (0xde)
+        'zp'      : 0xc6,
+        'zp x'    : 0xd6,
+        'abs'     : 0xce,
+        'abs x'   : 0xde
         },
 
     'eor' : {
-        'imm'     : (0x49),
-        'zp'      : (0x45),
-        'zp x'    : (0x55),
-        'abs'     : (0x4d),
-        'abs x'   : (0x5d),
-        'abs y'   : (0x59),
-        'ind x'   : (0x41),
-        'ind y'   : (0x51)
+        'imm'     : 0x49,
+        'zp'      : 0x45,
+        'zp x'    : 0x55,
+        'abs'     : 0x4d,
+        'abs x'   : 0x5d,
+        'abs y'   : 0x59,
+        'ind x'   : 0x41,
+        'ind y'   : 0x51
         },
 
     'clc' : {
-        'imm'     : (0x18)
+        'imm'     : 0x18
         },
 
     'sec' : {
-        'imm'     : (0x38)
+        'imm'     : 0x38
         },
 
     'cli' : {
-        'imm'     : (0x58)
+        'imm'     : 0x58
         },
 
     'sei' : {
-        'imm'     : (0x78)
+        'imm'     : 0x78
         },
 
     'clv' : {
-        'imm'     : (0xb8)
+        'imm'     : 0xb8
         },
 
     'cld' : {
-        'imm'     : (0xd8)
+        'imm'     : 0xd8
         },
 
     'sed' : {
-        'imm'     : (0xf8)
+        'imm'     : 0xf8
         },
 
     'inc' : {
-        'zp'      : (0xe6),
-        'zp x'    : (0xf6),
-        'abs'     : (0xee),
-        'abs x'   : (0xfe)
+        'zp'      : 0xe6,
+        'zp x'    : 0xf6,
+        'abs'     : 0xee,
+        'abs x'   : 0xfe
         },
 
     'jmp' : {
-        'abs'     : (0x4c),
-        'ind'     : (0x6c)
+        'abs'     : 0x4c,
+        'ind'     : 0x6c
         },
 
     'jsr' : {
-        'abs'     : (0x20)
+        'abs'     : 0x20
         },
 
     'lda' : {
-        'imm'     : (0xa9),
-        'zp'      : (0xa5),
-        'zp x'    : (0xb5),
-        'abs'     : (0xad),
-        'abs x'   : (0xbd),
-        'abs y'   : (0xb9),
-        'ind x'   : (0xa1),
-        'ind y'   : (0xb1)
+        'imm'     : 0xa9,
+        'zp'      : 0xa5,
+        'zp x'    : 0xb5,
+        'abs'     : 0xad,
+        'abs x'   : 0xbd,
+        'abs y'   : 0xb9,
+        'ind x'   : 0xa1,
+        'ind y'   : 0xb1
         },
 
     'ldx' : {
-        'imm'     : (0xa2),
-        'zp'      : (0xa6),
-        'zp y'    : (0xb6),
-        'abs'     : (0xae),
-        'abs y'   : (0xbe)
+        'imm'     : 0xa2,
+        'zp'      : 0xa6,
+        'zp y'    : 0xb6,
+        'abs'     : 0xae,
+        'abs y'   : 0xbe
         },
 
     'ldy' : {
-        'imm'     : (0xa0),
-        'zp'      : (0xa4),
-        'zp x'    : (0xb4),
-        'abs'     : (0xac),
-        'abs x'   : (0xbc)
+        'imm'     : 0xa0,
+        'zp'      : 0xa4,
+        'zp x'    : 0xb4,
+        'abs'     : 0xac,
+        'abs x'   : 0xbc
         },
 
     'lsr' : {
-        'acc'     : (0x4a),
-        'zp'      : (0x46),
-        'zp x'    : (0x56),
-        'abs'     : (0x4e),
-        'abs x'   : (0x5e)
+        'acc'     : 0x4a,
+        'zp'      : 0x46,
+        'zp x'    : 0x56,
+        'abs'     : 0x4e,
+        'abs x'   : 0x5e
         },
 
     'nop' : {
-        'imp'     : (0xea)
+        'imp'     : 0xea
         },
 
     'ora' : {
-        'imm'     : (0x09),
-        'zp'      : (0x05),
-        'zp x'    : (0x15),
-        'abs'     : (0x0d),
-        'abs x'   : (0x1d),
-        'abs y'   : (0x19),
-        'ind x'   : (0x01),
-        'ind y'   : (0x11)
+        'imm'     : 0x09,
+        'zp'      : 0x05,
+        'zp x'    : 0x15,
+        'abs'     : 0x0d,
+        'abs x'   : 0x1d,
+        'abs y'   : 0x19,
+        'ind x'   : 0x01,
+        'ind y'   : 0x11
         },
 
     'tax' : {
-        'imp'     : (0xaa)
+        'imp'     : 0xaa
         },
 
     'txa' : {
-        'imp'     : (0x8a)
+        'imp'     : 0x8a
         },
 
     'dex' : {
-        'imp'     : (0xca)
+        'imp'     : 0xca
         },
 
     'inx' : {
-        'imp'     : (0xe8)
+        'imp'     : 0xe8
         },
 
     'tay' : {
-        'imp'     : (0xa8)
+        'imp'     : 0xa8
         },
 
     'tya' : {
-        'imp'     : (0x98)
+        'imp'     : 0x98
         },
 
     'dey' : {
-        'imp'     : (0x88)
+        'imp'     : 0x88
         },
 
     'iny' : {
-        'imp'     : (0xc8)
+        'imp'     : 0xc8
         },
 
     'rol' : {
-        'acc'     : (0x2a),
-        'zp'      : (0x26),
-        'zp x'    : (0x36),
-        'abs'     : (0x2e),
-        'abs x'   : (0x3e)
+        'acc'     : 0x2a,
+        'zp'      : 0x26,
+        'zp x'    : 0x36,
+        'abs'     : 0x2e,
+        'abs x'   : 0x3e
         },
 
     'ror' : {
-        'acc'     : (0x6a),
-        'zp'      : (0x66),
-        'zp x'    : (0x76),
-        'abs'     : (0x6e),
-        'abs x'   : (0x7e)
+        'acc'     : 0x6a,
+        'zp'      : 0x66,
+        'zp x'    : 0x76,
+        'abs'     : 0x6e,
+        'abs x'   : 0x7e
         },
 
     'rti' : {
-        'imp'     : (0x40)
+        'imp'     : 0x40
         },
 
     'rts' : {
-        'imp'     : (0x60)
+        'imp'     : 0x60
         },
 
     'sbc' : {
-        'imm'     : (0xe9),
-        'zp'      : (0xe5),
-        'zp x'    : (0xf5),
-        'abs'     : (0xed),
-        'abs x'   : (0xfd),
-        'abs y'   : (0xf9),
-        'ind x'   : (0xe1),
-        'ind y'   : (0xf1)
+        'imm'     : 0xe9,
+        'zp'      : 0xe5,
+        'zp x'    : 0xf5,
+        'abs'     : 0xed,
+        'abs x'   : 0xfd,
+        'abs y'   : 0xf9,
+        'ind x'   : 0xe1,
+        'ind y'   : 0xf1
         },
 
     'sta' : {
-        'zp'      : (0x85),
-        'zp x'    : (0x95),
-        'abs'     : (0x8d),
-        'abs x'   : (0x9d),
-        'abs y'   : (0x99),
-        'ind x'   : (0x81),
-        'ind y'   : (0x91)
+        'zp'      : 0x85,
+        'zp x'    : 0x95,
+        'abs'     : 0x8d,
+        'abs x'   : 0x9d,
+        'abs y'   : 0x99,
+        'ind x'   : 0x81,
+        'ind y'   : 0x91
         },
 
     'txs' : {
-        'imp'     : (0x9a)
+        'imp'     : 0x9a
         },
 
     'tsx' : {
-        'imp'     : (0xba)
+        'imp'     : 0xba
         },
 
     'pha' : {
-        'imp'     : (0x48)
+        'imp'     : 0x48
         },
 
     'pla' : {
-        'imp'     : (0x68)
+        'imp'     : 0x68
         },
 
     'php' : {
-        'imp'     : (0x08)
+        'imp'     : 0x08
         },
 
     'plp' : {
-        'imp'     : (0x28)
+        'imp'     : 0x28
         },
 
     'stx' : {
-        'zp'      : (0x86),
-        'zp y'    : (0x96),
-        'abs'     : (0x8e)
+        'zp'      : 0x86,
+        'zp y'    : 0x96,
+        'abs'     : 0x8e
         },
 
     'sty' : {
-        'zp'      : (0x84),
-        'zp x'    : (0x94),
-        'abs'     : (0x8c)
+        'zp'      : 0x84,
+        'zp x'    : 0x94,
+        'abs'     : 0x8c
         }
     }
 
