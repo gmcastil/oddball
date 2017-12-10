@@ -3,22 +3,23 @@ A very strange assembler for the MOS 6502 instruction set
 
 Addressing modes are assumed to have the following format:
 
-Mode              Syntax            Bytes
-----              ------            -----
-Accumulator       ROL A             1
+Mode              Syntax            Bytes    Tested
+----              ------            -----    ------
+Accumulator       ROL A             1        x
 Relative          BPL label         2
-Implied           BRK               1
-Immediate         ADC #$44          2
+Implied           BRK               1        x
+Immediate         ADC #$44          2        x
 Zero page         ADC $44           2
 Zero page, X      ADC $44, X        2
 Absolute          ADC $4400         3
 Absolute, X       ADC $4400, X      3
 Absolute, Y       ADC $4400, Y      3
-Indirect, X       ADC ($44, X)      2
-Indirect, Y       ADC ($44), Y      2
+Indirect, X       ADC ($44, X)      2        x
+Indirect, Y       ADC ($44), Y      2        x
 
 """
 import sys
+import re
 from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
@@ -399,6 +400,10 @@ def parse_addr_mode(operands):
     if not operands:
         return 'imp'
 
+    # Immediate
+    if operands.startswith('#$'):
+        return 'imm'
+
     # Accumulator
     if operands == 'a':
         return 'acc'
@@ -412,7 +417,37 @@ def parse_addr_mode(operands):
         else:
             raise SyntaxError
 
-        # Absolute modes
+    # Absolute modes
+    abs_pattern = r'^\$[0-9A-Fa-f]{4}'
+    abs_match = re.search(abs_pattern, operands)
+    # This is really rather fragile and there are ways to break this
+    if abs_match:
+        if operands.endswith(',x'):
+            return 'abs x'
+        elif operands.endswith(',y'):
+            return 'abs y'
+        else:
+            return 'abs'
+
+    # Zero page modes
+    zp_pattern = r'^\$[0-9A-Fa-f]{2}$'
+    zp_match = re.search(zp_pattern, operands)
+    if zp_match:
+        return 'zp'
+
+    zp_x_pattern = r'^\$[0-9A-Fa-f]{2},x$'
+    zp_x_match = re.search(zp_x_pattern, operands)
+    if zp_x_match:
+        return 'zp x'
+
+    # Relative
+    rel_pattern = r'^[0-9A-Za-z\_]+$'
+    rel_match = re.search(rel_pattern, operands)
+    # Here we limit labels to alphanumeric strings with underscores
+    if rel_match:
+        return 'rel'
+    else:
+        raise SyntaxError
 
 
 def parse_line(line):
