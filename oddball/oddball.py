@@ -3,8 +3,8 @@ A very strange assembler for the MOS 6502 instruction set
 
 Addressing modes are assumed to have the following format:
 
-Mode              Syntax            Length     Notes
-----              ------            ------     -----
+Mode              Syntax            Bytes      Notes
+----              ------            -----      -----
 Accumulator       ROL A             1
 Relative          BPL label         2          Can also give immediate value
 Implied           BRK               1
