@@ -3,19 +3,19 @@ A very strange assembler for the MOS 6502 instruction set
 
 Addressing modes are assumed to have the following format:
 
-Mode              Syntax            Bytes    Tested
-----              ------            -----    ------
-Accumulator       ROL A             1        x
+Mode              Syntax            Bytes
+----              ------            -----
+Accumulator       ROL A             1
 Relative          BPL label         2
-Implied           BRK               1        x
-Immediate         ADC #$44          2        x
+Implied           BRK               1
+Immediate         ADC #$44          2
 Zero page         ADC $44           2
 Zero page, X      ADC $44, X        2
 Absolute          ADC $4400         3
 Absolute, X       ADC $4400, X      3
 Absolute, Y       ADC $4400, Y      3
-Indirect, X       ADC ($44, X)      2        x
-Indirect, Y       ADC ($44), Y      2        x
+Indirect, X       ADC ($44, X)      2
+Indirect, Y       ADC ($44), Y      2
 
 """
 import sys
@@ -23,6 +23,36 @@ import re
 from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
+
+# Functions to apply to operands for the lower byte
+lower_byte = {
+        'acc'     : lambda s: ''
+        'imm'     : lambda s: s.strip('#$'),
+        'rel'     : lambda s: s,
+        'imp'     : lambda s: '',
+        'zp'      : lambda s: s.strip('$'),
+        'zp x'    : lambda s: s,
+        'abs'     : lambda s: s[3:5],
+        'abs x'   : lambda s: s[3:5],
+        'abs y'   : lambda s: s[3:5],
+        'ind x'   : lambda s: s[2:4],
+        'ind y'   : lambda s: s[2:4]
+    }
+
+# Functions to apply to operands for the upper byte
+upper_byte = {
+        'acc'     : lambda s: '',
+        'imm'     : lambda s: '',
+        'rel'     : lambda s: '',
+        'imp'     : lambda s: '',
+        'zp'      : lambda s: '',
+        'zp x'    : lambda s: '',
+        'abs'     : lambda s: s[1:3],
+        'abs x'   : lambda s: s[1:3],
+        'abs y'   : lambda s: s[1:3],
+        'ind x'   : lambda s: '',
+        'ind y'   : lambda s: ''
+    }
 
 opcodes = {
 
