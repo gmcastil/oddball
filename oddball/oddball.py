@@ -397,7 +397,15 @@ def parse_addr_mode(operands):
     # Check for implied addressing mode first
     if not operands:
         mode = 'imp'
-    # Check for immediate addressing mode
+    # Check for each different indirect mode
+    if operands.startswith('('):
+        if operands.endswith(')'):
+            mode = 'ind x'
+        elif operands.endswith('y'):
+            mode =
+
+
+        # Check for immediate addressing mode
     elif operands.startswith('#'):
         mode = 'imm'
     # Check for indirect modes

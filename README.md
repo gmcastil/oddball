@@ -110,3 +110,16 @@ where `file` is your input 6502 assembly source code.  Some supported options ar
     -m, --with-map      Use this file to place additional data into memory
     -o, --output        Output filename to use (optional).  Default is to use the
                         input filename with .mif.
+
+## Tests
+
+To help development, I've added a small test suite - I don't know what the code
+coverage will be, but I'm going to try to make sure that I test label and branch
+handling, and that addressing modes are properly decoded.  To run the test
+suite, from the project directory, just run the following:
+
+```bash
+
+$ python3 -m unittest discover
+
+```
