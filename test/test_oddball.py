@@ -21,7 +21,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'bpl', 'operands' : 'label'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -33,7 +33,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'brk', 'operands' : None}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -45,7 +45,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '#$44'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -57,7 +57,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '$44'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -69,7 +69,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '$44, x'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -81,7 +81,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '$4400'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -93,7 +93,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '$4400, x'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -105,7 +105,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '$4400, y'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -117,7 +117,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '($44, x)'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
@@ -129,7 +129,7 @@ class TestOddballParseInstruction(unittest.TestCase):
         expected = {'label' : None, 'mneumonic' : 'adc', 'operands' : '($44), y'}
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
-    # Now test with a label
+        # Now test with a label
         instruction = 'test_label:' + '    ' + instruction
         expected['label'] = 'test_label'
         result = oddball.parse_line(instruction)
