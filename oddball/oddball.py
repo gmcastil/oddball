@@ -388,18 +388,31 @@ def parse_addr_mode(operands):
     Returns:
       str - Addressing mode to use for looking up opcodes and values to place
 
+    Raises:
+      SyntaxError - Catch this elsewhere and reraise with the line number
+
     """
     # Start by getting rid of any surviving whitespace and lowering everything
-    operands = operands.lower().strip()
+    operands = operands.lower().strip().replace(' ', '')
 
+    # Implied
     if not operands:
         return 'imp'
 
-    if operands = 'a':
+    # Accumulator
+    if operands == 'a':
         return 'acc'
 
-    if
+    # Indirect modes
+    if operands.startswith('('):
+        if operands.endswith(',x)'):
+            return 'ind x'
+        elif operands.endswith('),y'):
+            return 'ind y'
+        else:
+            raise SyntaxError
 
+        # Absolute modes
 
 
 def parse_line(line):
