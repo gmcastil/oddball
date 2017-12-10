@@ -1,5 +1,5 @@
 import unittest
-import oddball
+from oddball import oddball
 
 class TestOddballParseInstruction(unittest.TestCase):
     """Verify that source lines are parsed correctly with and without labels"""

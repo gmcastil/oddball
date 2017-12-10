@@ -390,37 +390,41 @@ def parse_addr_mode(operands):
 
     """
     # Start by getting rid of any surviving whitespace and lowering everything
-    # operands = operands.lower().strip()
+    operands = operands.lower().strip()
 
-    # # Use this to identify syntax errors
-    # mode = None
-    # # Check for implied addressing mode first
-    # if not operands:
-    #     mode = 'imp'
-    # # Check for each different indirect mode
-    # if operands.startswith('('):
-    #     if operands.endswith(')'):
-    #         mode = 'ind x'
-    #     elif operands.endswith('y'):
-    #     # Check for immediate addressing mode
-    # elif operands.startswith('#'):
-    #     mode = 'imm'
-    # # Check for indirect modes
-    # elif operands.startswith('('):
-    #     if operands.endswith(')'):
-    #         # Indirect X
-    #         mode = 'ind x'
-    #     elif operands.endswith('y'):
-    #         # Indirect Y
-    #         mode = 'ind y'
-    #     else:
-    #         # Syntax error
-    #         mode = None
-    # #
-    return False
+    mode = None
+    if not operands:
+        mode = 'imp'
+
+
 
 def parse_line(line):
-    return False
+    """
+
+    Args:
+      line (str): Line of valid source code (stripped)
+
+    Returns:
+      dict - Contains assembly mneumonic, label, and operands
+
+    """
+    head, sep, tail = line.partition(':')
+    if sep:
+        label = head.strip()
+        statement = tail.strip()
+    else:
+        label = None
+        statement = line.strip()
+
+    head, sep, tail = statement.partition(' ')
+    if sep:
+        mneumonic = head.strip()
+        operands = tail.strip()
+    else:
+        mneumonic = statement.strip()
+        operands = None
+
+    return {'label' : label, 'mneumonic' : mneumonic, 'operands' : operands}
 
 def stripped(filename):
     """Generates a sequence of source code lines without comments or whitespace
@@ -480,7 +484,7 @@ def is_origin(line):
     """Returns True if line is a valid origin directive
 
     Args:
-      line (str): Line of valid source code
+      line (str): Line of valid source code (stripped)
 
     Returns:
       bool
