@@ -3,10 +3,10 @@ A very strange assembler for the MOS 6502 instruction set
 
 Addressing modes are assumed to have the following format:
 
-Mode              Syntax            Bytes      Notes
-----              ------            -----      -----
+Mode              Syntax            Bytes
+----              ------            -----
 Accumulator       ROL A             1
-Relative          BPL label         2          Can also give immediate value
+Relative          BPL label         2
 Implied           BRK               1
 Immediate         ADC #$44          2
 Zero page         ADC $44           2
@@ -392,9 +392,13 @@ def parse_addr_mode(operands):
     # Start by getting rid of any surviving whitespace and lowering everything
     operands = operands.lower().strip()
 
-    mode = None
     if not operands:
-        mode = 'imp'
+        return 'imp'
+
+    if operands = 'a':
+        return 'acc'
+
+    if
 
 
 
