@@ -136,6 +136,7 @@ class TestParseInstruction(unittest.TestCase):
         result = oddball.parse_line(instruction)
         self.assertEqual(expected, result)
 
+
 class TestParseAddress(unittest.TestCase):
     """Verify that addressing modes are inferred correctly from operands"""
 
@@ -217,65 +218,74 @@ class TestParseAddress(unittest.TestCase):
         self.assertEqual(expected, result)
 
 
-class TestLowerByte(unittest.TestCase):
-    """Test that lower bytes are returned correctly"""
-    def test_low_bytes(self):
+class TestBytes(unittest.TestCase):
+    """Test that lower and upper bytes are returned correctly"""
+
+    def test_lower_bytes(self):
 
         # Test one byte modes
 
         # Accumulator
-        expected = ''
+        high_byte_expect = ''
+        low_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['acc']('a')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
         # Implied
-        expected = ''
+        high_byte_expect = ''
+        low_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['imp']('')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Test two byte modes
 
         # Relative
-        expected = 'test_label'
+        high_byte_expect = ''
+        low_byte_expect = 'test_label'
         low_byte_result = oddball.LOWER_BYTE['rel']('test_label')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Immediate
-        expected = '34'
+        high_byte_expect = ''
+        low_byte_expect = '34'
         low_byte_result = oddball.LOWER_BYTE['imm']('#$34')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Zero page
+        high_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['zp']('$34')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Zero page, X
+        high_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['zp x']('$34,x')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Indirect, X
+        high_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['ind x']('($34,x)')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Indirect, Y
+        high_byte_expect = ''
         low_byte_result = oddball.LOWER_BYTE['ind y']('($34),y')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Test three byte modes
 
         # Absolute
+        high_byte_expect = '12'
         low_byte_result = oddball.LOWER_BYTE['abs']('$1234')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Absolute, X
+        high_byte_expect = '12'
         low_byte_result = oddball.LOWER_BYTE['abs x']('$1234,x')
-        self.assertEqual(expected, low_byte_result)
+        self.assertEqual(low_byte_expect, low_byte_result)
 
         # Absolute, Y
+        high_byte_expect = '12'
         low_byte_result = oddball.LOWER_BYTE['abs y']('$1234,y')
-        self.assertEqual(expected, low_byte_result)
-
-class TestUpperByte(unittest.TestCase):
-    """Test that upper bytes are returned correctly"""
+        self.assertEqual(low_byte_expect, low_byte_result)
 
 
 if __name__ == "__main__":
