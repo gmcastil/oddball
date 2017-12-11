@@ -20,6 +20,7 @@ Indirect, Y       ADC ($44),Y       2
 """
 import sys
 import re
+import pdb
 from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
@@ -170,31 +171,31 @@ OPCODES = {
         },
 
     'clc' : {
-        'imm'     : '0x18'
+        'imp'     : '0x18'
         },
 
     'sec' : {
-        'imm'     : '0x38'
+        'imp'     : '0x38'
         },
 
     'cli' : {
-        'imm'     : '0x58'
+        'imp'     : '0x58'
         },
 
     'sei' : {
-        'imm'     : '0x78'
+        'imp'     : '0x78'
         },
 
     'clv' : {
-        'imm'     : '0xb8'
+        'imp'     : '0xb8'
         },
 
     'cld' : {
-        'imm'     : '0xd8'
+        'imp'     : '0xd8'
         },
 
     'sed' : {
-        'imm'     : '0xf8'
+        'imp'     : '0xf8'
         },
 
     'inc' : {
@@ -416,20 +417,21 @@ class Block(object):
 
             # Use the addressing mode and mneumonic to get the right opcode
             opcode = OPCODES[mneumonic][addr_mode]
-
             # The label should point to the location of this instruction
             if label:
                 self._symbols[label] = len(object_code)
 
             lower_byte = LOWER_BYTE[addr_mode](operands)
             upper_byte = UPPER_BYTE[addr_mode](operands)
-            object_code.append(opcode)
+
+            # Strip off the '0x'
+            object_code.append(opcode[2:])
             if lower_byte:
                 object_code.append(lower_byte)
             if upper_byte:
                 object_code.append(upper_byte)
         # After the first pass is complete, store it for use in second pass
-        self._object_code
+        self._object_code = object_code
 
     def _second_pass(self):
         pass
