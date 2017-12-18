@@ -226,64 +226,71 @@ class TestBytes(unittest.TestCase):
         # Test one byte modes
 
         # Accumulator
-        high_byte_expect = ''
-        low_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = None
         low_byte_result = oddball.LOWER_BYTE['acc']('a')
         self.assertEqual(low_byte_expect, low_byte_result)
         # Implied
-        high_byte_expect = ''
-        low_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = None
         low_byte_result = oddball.LOWER_BYTE['imp']('')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Test two byte modes
 
         # Relative
-        high_byte_expect = ''
+        high_byte_expect = None
         low_byte_expect = 'test_label'
         low_byte_result = oddball.LOWER_BYTE['rel']('test_label')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Immediate
-        high_byte_expect = ''
-        low_byte_expect = '34'
+        high_byte_expect = None
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['imm']('#$34')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Zero page
-        high_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['zp']('$34')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Zero page, X
-        high_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['zp x']('$34,x')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Indirect, X
-        high_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['ind x']('($34,x)')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Indirect, Y
-        high_byte_expect = ''
+        high_byte_expect = None
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['ind y']('($34),y')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Test three byte modes
 
         # Absolute
-        high_byte_expect = '12'
+        high_byte_expect = 0x12
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['abs']('$1234')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Absolute, X
-        high_byte_expect = '12'
+        high_byte_expect = 0x12
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['abs x']('$1234,x')
         self.assertEqual(low_byte_expect, low_byte_result)
 
         # Absolute, Y
-        high_byte_expect = '12'
+        high_byte_expect = 0x12
+        low_byte_expect = 0x34
         low_byte_result = oddball.LOWER_BYTE['abs y']('$1234,y')
         self.assertEqual(low_byte_expect, low_byte_result)
 
