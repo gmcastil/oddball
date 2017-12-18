@@ -454,9 +454,9 @@ class Block(object):
                 # Calculate relative position and replace the label with it
                 offset = symbol_position - index
                 if offset > 0:
-                    self._object_code[index] = offset
+                    self._object_code[index] = offset - 1
                 else:
-                    offset = offset - 1
+                    offset = abs(offset - 1)
                     self._object_code[index] = twos_complement(offset)
         return object_code
 
@@ -631,7 +631,8 @@ def is_origin(line):
     return status
 
 def twos_complement(number):
-    return number
+    complement = (0xff ^ number)
+    return complement + 1
 
 def main(args):
     blocks = extract_code('../roms/test.rom')
