@@ -20,10 +20,21 @@ Indirect, Y       ADC ($44),Y       2
 """
 import sys
 import re
-import pdb
 from collections import namedtuple
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
+
+# Parameters for .coe file definition
+HIGH_ADDRESS = 2**16  # 64k address space
+MAX_ADDRESS = 2**16  # this is the largest that the memory generator accepts
+
+PAGE_SIZE = 2**12  # 4096 addresses per page
+ROW_SIZE = 2**6  # number of rows per page
+COL_SIZE = 2**6  # number of cols per page
+
+
+# ROMs for this memory map will always be 16-bit addressed
+ADDR_WIDTH = 2**16
 
 # Functions to apply to operands for the lower byte
 LOWER_BYTE = {
@@ -389,7 +400,7 @@ class Block(object):
     def __init__(self, offset, source):
         self.offset = offset
         self.source = source
-        self._exec_code = list()
+        self.exec_code = list()
 
         # Symbol table for storing interim results
         self._symbols = dict()
@@ -400,11 +411,22 @@ class Block(object):
         return len(self.exec_code)
 
     def assemble(self):
+        """Assembles a block of source code
+
+        Returns:
+          None
+
+        """
         self._object_code = self._first_pass()
-        self._exec_code = self._second_pass()
+        self.exec_code = self._second_pass()
 
     def _first_pass(self):
-        "First pass assembly and build symbol table"
+        """First pass assembly and build symbol table
+
+        Returns:
+          list - Assembled source code with symbols included
+
+        """
         object_code = list()
         for line in self.source:
             # Fetch assembly mneumonic, label, and operands
@@ -432,12 +454,16 @@ class Block(object):
                 object_code.append(lower_byte)
             if upper_byte is not None:
                 object_code.append(upper_byte)
-        # After the first pass is complete, store it for use in second pass
+
         return object_code
 
     def _second_pass(self):
-        "Complete assembly and generate final machine code"
+        """Complete assembly and generate final machine code
 
+        Returns:
+          list - Final executable code with symbols removed
+
+        """
         # Copy the object code to preserve it from the first pass
         object_code = list(self._object_code)
 
@@ -458,6 +484,7 @@ class Block(object):
                 else:
                     offset = abs(offset - 1)
                     self._object_code[index] = twos_complement(offset)
+
         return object_code
 
 
@@ -530,7 +557,6 @@ def parse_addr_mode(operands):
         return 'rel'
     else:
         raise SyntaxError
-
 
 def parse_line(line):
     """Parses lines into the appropriate tokens required
@@ -634,8 +660,56 @@ def twos_complement(number):
     complement = (0xff ^ number)
     return complement + 1
 
+def write_coefficients(filename, data):
+    """Writes a .coe file out to disk from the supplied data
+
+    Returns:
+      None
+
+    """
+    if (ROW_SIZE * COL_SIZE != PAGE_SIZE):
+        err_msg = "Page dimensions are incorrect. Check row and column sizes"
+        raise ValueError(err_msg)
+
+    with open(filename, 'w') as coe_file:
+        header = (";; Distributed Memory Generator COE file\n",
+                  ";; \tAddress Size = {}\n".format(HIGH_ADDRESS),
+                  ";; \tPage Size = {}\n".format(PAGE_SIZE),
+                  "memory_initialization_radix = 16;\n",
+                  "memory_initialization_vector = \n")
+        coe_file.write(header)
+
+
+
+        # page_numbers = 2**16 // 2**12
+        # for page_number in range(page_numbers):
+        #     start_addr = hex(page_number * PAGE_SIZE)
+        #     end_addr = hex((page_number + 1) * PAGE_SIZE - 1)
+        #     page_foot = (";; End of addresses {} to {}.\n".format(start_addr,end_addr))
+        #     lines = (make_page(), "\n", page_foot)
+        #     coe_file.writelines(lines)
+
+
 def main(args):
-    blocks = extract_code('../roms/test.rom')
+    # This will be provided as an input file later, for now hard code it
+    source_file = './test.asm'
+    # Dict of Block objects - key is the address offset
+    blocks = extract_code(source_file)
+
+    # Create an empty coefficients structure containing NOP
+    coe_data = [OPCODES['nop']['imp'] for i in range(ADDR_WIDTH)]
+    for block in blocks:
+        block.assemble()
+        start_offset = block.offset
+        end_offset = start_offset + len(block)
+        coe_data[start_offset:end_offset] = block.exec_code
+
+    return coe_data
+
+    # If present, add in data from the memory map
+
+    # If directed to
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
