@@ -389,7 +389,7 @@ class Block(object):
     def __init__(self, offset, source):
         self.offset = offset
         self.source = source
-        self.exec_code = []
+        self._exec_code = list()
 
         # Symbol table for storing interim results
         self._symbols = dict()
@@ -400,12 +400,12 @@ class Block(object):
         return len(self.exec_code)
 
     def assemble(self):
-        self._object_code = self.first_pass()
-        self.exec_code = self._second_pass()
+        self._object_code = self._first_pass()
+        self._exec_code = self._second_pass()
 
     def _first_pass(self):
         "First pass assembly and build symbol table"
-        object_code = []
+        object_code = list()
         for line in self.source:
             # Fetch assembly mneumonic, label, and operands
             parsed_line = parse_line(line.code)
@@ -425,18 +425,40 @@ class Block(object):
             lower_byte = LOWER_BYTE[addr_mode](operands)
             upper_byte = UPPER_BYTE[addr_mode](operands)
 
-            # Strip off the '0x'
+            # Add the opcode
             object_code.append(opcode)
+            # Add lower and upper bytes, little endian
             if lower_byte is not None:
                 object_code.append(lower_byte)
             if upper_byte is not None:
                 object_code.append(upper_byte)
         # After the first pass is complete, store it for use in second pass
-        self._object_code = object_code
+        return object_code
 
     def _second_pass(self):
         "Complete assembly and generate final machine code"
-        pass
+
+        # Copy the object code to preserve it from the first pass
+        object_code = list(self._object_code)
+
+        # Iterate over each entry in the object code
+        for index, entry in enumerate(object_code):
+            if isinstance(entry, str):
+                try:
+                    # Look up the offset in the symbol table
+                    symbol_position = self._symbols[entry]
+                # Add a check here to error if the label is missing
+                except KeyError:
+                    print('ERROR: Label not found')
+
+                # Calculate relative position and replace the label with it
+                offset = symbol_position - index
+                if offset > 0:
+                    self._object_code[index] = offset
+                else:
+                    offset = offset - 1
+                    self._object_code[index] = twos_complement(offset)
+        return object_code
 
 
 def parse_addr_mode(operands):
@@ -607,6 +629,9 @@ def is_origin(line):
     if line.startswith('.' + directive):
         status = True
     return status
+
+def twos_complement(number):
+    return number
 
 def main(args):
     blocks = extract_code('../roms/test.rom')
