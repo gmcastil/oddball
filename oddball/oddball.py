@@ -30,10 +30,9 @@ SourceLine = namedtuple('SourceLine', ['number', 'code'])
 HIGH_ADDRESS = 2**16  # 64k address space
 MAX_ADDRESS = 2**16  # this is the largest that the memory generator accepts
 
-PAGE_SIZE = 2**12  # 4096 addresses per page
+PAGE_SIZE = 2**10  # 4096 addresses per page
 ROW_SIZE = 2**6  # number of rows per page
 COL_SIZE = 2**6  # number of cols per page
-
 
 # ROMs for this memory map will always be 16-bit addressed
 ADDR_WIDTH = 2**16
@@ -690,8 +689,11 @@ def write_coefficients(filename, data):
 
         coe_file.write(header)
         rows = row_gen(data)
-        for row in rows:
+        for number, row in enumerate(rows):
             coe_file.write(' '.join(row) + '\n')
+            if number % (ADDR_WIDTH / PAGE_SIZE) == 0 and number != 0:
+                boundary_str = f';; End of addresses  to .\n'
+                coe_file.write(boundary_str)
 
 def main(args):
     # This will be provided as an input file later, for now hard code it
