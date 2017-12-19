@@ -20,7 +20,9 @@ Indirect, Y       ADC ($44),Y       2
 """
 import sys
 import re
+import pdb
 from collections import namedtuple
+from textwrap import dedent
 
 SourceLine = namedtuple('SourceLine', ['number', 'code'])
 
@@ -480,10 +482,10 @@ class Block(object):
                 # Calculate relative position and replace the label with it
                 offset = symbol_position - index
                 if offset > 0:
-                    self._object_code[index] = offset - 1
+                    object_code[index] = offset - 1
                 else:
                     offset = abs(offset - 1)
-                    self._object_code[index] = twos_complement(offset)
+                    object_code[index] = twos_complement(offset)
 
         return object_code
 
@@ -667,28 +669,29 @@ def write_coefficients(filename, data):
       None
 
     """
-    if (ROW_SIZE * COL_SIZE != PAGE_SIZE):
-        err_msg = "Page dimensions are incorrect. Check row and column sizes"
-        raise ValueError(err_msg)
+    def row_gen(data):
+        "Yield successive rows of elements"
+        for i in range(0, len(data), 64):
+            # Get a 64-byte chunk
+            row = data[i:i+64]
+            # Convert to a two-digit hex value
+            yield [hex(number)[2:].zfill(2) for number in row]
 
     with open(filename, 'w') as coe_file:
-        header = (";; Distributed Memory Generator COE file\n",
-                  ";; \tAddress Size = {}\n".format(HIGH_ADDRESS),
-                  ";; \tPage Size = {}\n".format(PAGE_SIZE),
-                  "memory_initialization_radix = 16;\n",
-                  "memory_initialization_vector = \n")
+        header = dedent(
+            f'''\
+            ;; Distributed Memory Generator COE file
+            ;; \tAddress Size = {HIGH_ADDRESS}
+            ;; \tPage Size = {PAGE_SIZE}
+            memory_initialization_radix = 16;
+            memory_initialization_vector =
+            '''
+            )
+
         coe_file.write(header)
-
-
-
-        # page_numbers = 2**16 // 2**12
-        # for page_number in range(page_numbers):
-        #     start_addr = hex(page_number * PAGE_SIZE)
-        #     end_addr = hex((page_number + 1) * PAGE_SIZE - 1)
-        #     page_foot = (";; End of addresses {} to {}.\n".format(start_addr,end_addr))
-        #     lines = (make_page(), "\n", page_foot)
-        #     coe_file.writelines(lines)
-
+        rows = row_gen(data)
+        for row in rows:
+            coe_file.write(' '.join(row) + '\n')
 
 def main(args):
     # This will be provided as an input file later, for now hard code it
@@ -703,6 +706,7 @@ def main(args):
         start_offset = block.offset
         end_offset = start_offset + len(block)
         coe_data[start_offset:end_offset] = block.exec_code
+        print(f"Assembling {len(block)} bytes at offset {hex(start_offset)}...")
 
     return coe_data
 
