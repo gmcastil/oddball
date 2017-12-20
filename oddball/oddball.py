@@ -677,6 +677,7 @@ def write_coefficients(filename, data):
             yield [hex(number)[2:].zfill(2) for number in row]
 
     with open(filename, 'w') as coe_file:
+        # Xilinx header files have a peculiar format
         header = dedent(
             f'''\
             ;; Distributed Memory Generator COE file
