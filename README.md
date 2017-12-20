@@ -120,6 +120,6 @@ suite, from the project directory, just run the following:
 
 ```bash
 
-$ python3 -m unittest discover
+$ python3 -m unittest
 
 ```
