@@ -52,9 +52,9 @@ Since this is a strange use case, there are a couple of additional caveats:
 * The assembled output will always be 64KB in size, since that is the size of
   the 6502 address space
 * All non-program bytes will be populated with NOP (`0xEA`) opcodes
-* Since the purpose of the output is to simulate the 6502 address space,
-  additional bytes will appear in the output, notably the address of the reset
-  vector and interrupt handling routines in addresses `$fffa` through `$ffff`.
+* If the intent of the user is to simulate the 6502 address space, additional
+  bytes need to appear in the output, notably the address of the reset vector
+  and interrupt handling routines in addresses `$fffa` through `$ffff`.
 * Because the intent of the output products is to verify hardware behavior, no
   support for macros exists.
 
