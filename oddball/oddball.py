@@ -692,8 +692,8 @@ def write_coefficients(filename, data):
         rows = row_gen(data)
         for number, row in enumerate(rows):
             coe_file.write(' '.join(row) + '\n')
-            if number % (ADDR_WIDTH / PAGE_SIZE) == 0 and number != 0:
-                boundary_str = f';; End of addresses  to .\n'
+            if number % (PAGE_SIZE / 64) == 0 and number != 0:
+                boundary_str = ';; End of addresses to {}.\n'.format(hex(number))
                 coe_file.write(boundary_str)
 
 def main(args):
