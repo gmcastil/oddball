@@ -30,9 +30,7 @@ SourceLine = namedtuple('SourceLine', ['number', 'code'])
 HIGH_ADDRESS = 2**16  # 64k address space
 MAX_ADDRESS = 2**16  # this is the largest that the memory generator accepts
 
-PAGE_SIZE = 2**10  # 4096 addresses per page
-ROW_SIZE = 2**6  # number of rows per page
-COL_SIZE = 2**6  # number of cols per page
+PAGE_SIZE = 2**8  # 256 addresses per page
 
 # ROMs for this memory map will always be 16-bit addressed
 ADDR_WIDTH = 2**16
@@ -692,9 +690,10 @@ def write_coefficients(filename, data):
         rows = row_gen(data)
         for number, row in enumerate(rows):
             coe_file.write(' '.join(row) + '\n')
-            if number % (PAGE_SIZE / 64) == 0 and number != 0:
-                boundary_str = ';; End of addresses to {}.\n'.format(hex(number))
-                coe_file.write(boundary_str)
+            if (number % 16 == 0) and number != 0:
+                print('Found page boundary')
+
+            #     coe_file.write(boundary_str)
 
 def main(args):
     # This will be provided as an input file later, for now hard code it
@@ -711,6 +710,7 @@ def main(args):
         coe_data[start_offset:end_offset] = block.exec_code
         print(f"Assembling {len(block)} bytes at offset {hex(start_offset)}...")
 
+    print(coe_data)
     return coe_data
 
     # If present, add in data from the memory map
