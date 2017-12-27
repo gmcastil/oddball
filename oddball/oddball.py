@@ -20,7 +20,6 @@ Indirect, Y       ADC ($44),Y       2
 """
 import sys
 import re
-import pdb
 from collections import namedtuple
 from textwrap import dedent
 
@@ -28,7 +27,6 @@ SourceLine = namedtuple('SourceLine', ['number', 'code'])
 
 # Parameters for .coe file definition
 HIGH_ADDRESS = 2**16  # 64k address space
-MAX_ADDRESS = 2**16  # this is the largest that the memory generator accepts
 
 PAGE_SIZE = 2**8  # 256 addresses per page
 
