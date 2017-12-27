@@ -669,7 +669,7 @@ def write_coefficients(filename, data):
         for i in range(0, len(data), 64):
             # Get a 64-byte chunk
             row = data[i:i+64]
-            # Convert to a two-digit hex value
+            # Convert to a two-digit hex value but remove the leading '0x'
             yield [hex(number)[2:].zfill(2) for number in row]
 
     with open(filename, 'w') as coe_file:
@@ -687,11 +687,14 @@ def write_coefficients(filename, data):
         coe_file.write(header)
         rows = row_gen(data)
         for number, row in enumerate(rows):
+            if (number % 4 == 0):
+                # Need multiplication here because there are 64 bytes per line
+                page_number = int(number * 64)
+                # Format in the usual way
+                page_number = format(page_number, '#06x')
+                boundary_str = f';; Begin page {page_number}.\n'
+                coe_file.write(boundary_str)
             coe_file.write(' '.join(row) + '\n')
-            if (number % 16 == 0) and number != 0:
-                print('Found page boundary')
-
-            #     coe_file.write(boundary_str)
 
 def main(args):
     # This will be provided as an input file later, for now hard code it
@@ -705,10 +708,10 @@ def main(args):
         block.assemble()
         start_offset = block.offset
         end_offset = start_offset + len(block)
+        # Insert each block into the coefficients structure
         coe_data[start_offset:end_offset] = block.exec_code
         print(f"Assembling {len(block)} bytes at offset {hex(start_offset)}...")
 
-    print(coe_data)
     return coe_data
 
     # If present, add in data from the memory map
