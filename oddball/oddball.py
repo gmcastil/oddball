@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 A very strange assembler for the MOS 6502 instruction set
 
@@ -20,6 +22,7 @@ Indirect, Y       ADC ($44),Y       2
 """
 import sys
 import re
+import argparse
 from collections import namedtuple
 from textwrap import dedent
 
@@ -697,27 +700,39 @@ def write_coefficients(filename, data):
             coe_file.write(' '.join(row) + '\n')
 
 def main(args):
-    # This will be provided as an input file later, for now hard code it
-    source_file = './test.asm'
+
+    parser = argparse.ArgumentParser()
+    parser.formatter_class.max_help_position = 50
+
+    parser.add_argument('filename',
+                        help='Input source code')
+    parser.add_argument('--coe-only',
+                        help='Only generate a coefficients file',
+                        action='store_true')
+    parser.add_argument('--with-map',
+                        metavar='MEMORY MAP',
+                        help='Additional data to place in memory')
+    args = parser.parse_args()
+    print(args.filename)
+
     # Dict of Block objects - key is the address offset
     blocks = extract_code(source_file)
 
     # Create an empty coefficients structure containing NOP
-    coe_data = [OPCODES['nop']['imp'] for i in range(ADDR_WIDTH)]
+    data = [OPCODES['nop']['imp'] for i in range(ADDR_WIDTH)]
     for block in blocks:
         block.assemble()
         start_offset = block.offset
         end_offset = start_offset + len(block)
         # Insert each block into the coefficients structure
-        coe_data[start_offset:end_offset] = block.exec_code
+        data[start_offset:end_offset] = block.exec_code
         print(f"Assembling {len(block)} bytes at offset {hex(start_offset)}...")
 
-    return coe_data
+    # Add the memory map, if it is supplied
 
-    # If present, add in data from the memory map
 
     # If directed to
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    sys.exit(main(sys.argv[1:]))
