@@ -95,7 +95,8 @@ dec:    dex
         sta     $22
 ne:     brk
 
-
+        .org    $ffff
+        brk
         ;; -- And Accumulator with Memory (AND)
 
 ;;         ;; 0x55 & 0xaa = 0x00, returns Z = 1, N = 0
