@@ -699,21 +699,27 @@ def write_coefficients(filename, data):
                 coe_file.write(boundary_str)
             coe_file.write(' '.join(row) + '\n')
 
-def main(args):
+def main():
 
-    parser = argparse.ArgumentParser()
-    parser.formatter_class.max_help_position = 50
+    desc_text = 'Converts MOS 6502 assembly code to Xilinx .COE and .MIF files'
+
+    # Set up command line argument parsing and increase the allowed width of
+    # the help text
+    parser = argparse.ArgumentParser(
+        prog='oddball',
+        description=desc_text,
+        formatter_class=lambda prog: argparse.HelpFormatter(
+            prog, max_help_position=50))
 
     parser.add_argument('filename',
-                        help='Input source code')
-    parser.add_argument('--coe-only',
-                        help='Only generate a coefficients file',
-                        action='store_true')
-    parser.add_argument('--with-map',
-                        metavar='MEMORY MAP',
-                        help='Additional data to place in memory')
+                        help='input source code')
+    parser.add_argument('-c', '--coe-only', action='store_true',
+                        help='only generate a coefficients file')
+    parser.add_argument('-m', '--with-map', metavar='MAP_FILE',
+                        help='additional data to place in memory')
+    parser.add_argument('-o', '--output', metavar='MIF_FILE',
+                        help='output filename to use')
     args = parser.parse_args()
-    print(args.filename)
 
     # Dict of Block objects - key is the address offset
     blocks = extract_code(source_file)
@@ -730,9 +736,7 @@ def main(args):
 
     # Add the memory map, if it is supplied
 
-
     # If directed to
 
-
 if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+    sys.exit(main())
