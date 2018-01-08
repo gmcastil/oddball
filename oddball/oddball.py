@@ -704,6 +704,22 @@ def write_coefficients(filename, data):
                 coe_file.write(boundary_str)
             coe_file.write(' '.join(row) + '\n')
 
+def write_mif(filename, data):
+    """Writes a .mif file out to disk from the supplied data
+
+    Args:
+      filename (str): Output filename
+      data (list): Complete
+
+    Returns:
+      None
+
+    """
+    with open(filename, 'w') as mif_file:
+        for byte in data:
+            bin_string = bin(byte)[2:]
+            mif_file.write(bin_string + '\n')
+
 def assemble(filename, quiet=True):
     """Assembles a source file into machine code
 
@@ -738,16 +754,29 @@ def add_map(filename, data):
 
     Args:
       filename (str): Memory map containing address and value pairs
-      data (list):
+      data (list): Machine code containng the entire 64KB address space
+
+    Returns
+      list - Input data with added values from the map file
+
+    Input data is nominally considered to be the results of assembly
 
     """
-    def
-
     with open(filename, 'r') as map_file:
         for line in map_file:
             if line.startswith('#'):
                 pass
-            else if
+            elif ';' in line:
+                comment_index = line.find('#')
+                line = line[:comment_index].strip()
+            else:
+                line = line.strip()
+            address, value = line.split()
+            address = int(address.strip('$'), 16)
+            value = int(value.strip('$'), 16)
+            data[address] = value
+    return data
+
 
 def main():
 
@@ -785,10 +814,19 @@ def main():
         else:
             raise OSError('Map file not found.')
 
-    if args.coe_only:
-        print('coe arg')
+    # Write out a .coe file
+    coe_file = os.path.splitext(args.filename)[0] + '.coe'
+    if not args.quiet:
+        print(f'Generating coefficients file at {coe_file}.')
+    write_coefficients(coe_file, data)
 
-    # If directed to
+    # Unless otherwise directed, generate a .mif file as well
+    if not args.coe_only:
+        mif_file = os.path.splitext(args.filename)[0] + '.mif'
+        if not args.quiet:
+            print(f'Generating memory initialization file at {mif_file}.')
+        write_mif(mif_file, data)
+
 
 if __name__ == '__main__':
     sys.exit(main())
