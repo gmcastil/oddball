@@ -20,6 +20,7 @@ Indirect, X       ADC ($44,X)       2
 Indirect, Y       ADC ($44),Y       2
 
 """
+import os
 import sys
 import re
 import argparse
@@ -663,6 +664,10 @@ def twos_complement(number):
 def write_coefficients(filename, data):
     """Writes a .coe file out to disk from the supplied data
 
+    Args:
+      filename (str): Output filename
+      data (list): Complete
+
     Returns:
       None
 
@@ -699,6 +704,51 @@ def write_coefficients(filename, data):
                 coe_file.write(boundary_str)
             coe_file.write(' '.join(row) + '\n')
 
+def assemble(filename, quiet=True):
+    """Assembles a source file into machine code
+
+    Args:
+      filename (str): Input filename
+      quiet (bool):
+
+    Returns:
+      list - Machine code containing the entire 64KB address space
+
+    """
+
+    # Dict of Block objects - key is the address offset
+    blocks = extract_code(filename)
+    # Create an empty coefficients structure containing NOP
+    data = [OPCODES['nop']['imp'] for i in range(ADDR_WIDTH)]
+    # Iterate over each block of assembly code extracted from the source
+    # file and place into coefficents structure
+    for block in blocks:
+        block.assemble()
+        start_offset = block.offset
+        end_offset = start_offset + len(block)
+        # Insert each block into the coefficients structure
+        data[start_offset:end_offset] = block.exec_code
+        if not quiet:
+            print(f'Assembling {len(block)} bytes at offset'
+                  f'{hex(start_offset)}...')
+    return data
+
+def add_map(filename, data):
+    """Adds a memory map to a complete coefficients image
+
+    Args:
+      filename (str): Memory map containing address and value pairs
+      data (list):
+
+    """
+    def
+
+    with open(filename, 'r') as map_file:
+        for line in map_file:
+            if line.startswith('#'):
+                pass
+            else if
+
 def main():
 
     desc_text = 'Converts MOS 6502 assembly code to Xilinx .COE and .MIF files'
@@ -719,22 +769,24 @@ def main():
                         help='additional data to place in memory')
     parser.add_argument('-o', '--output', metavar='MIF_FILE',
                         help='output filename to use')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='suppress all output')
     args = parser.parse_args()
 
-    # Dict of Block objects - key is the address offset
-    blocks = extract_code(source_file)
+    if args.filename:
+        if os.path.exists(args.filename):
+            data = assemble(args.filename, args.quiet)
+        else:
+            raise OSError('Source file not found.')
 
-    # Create an empty coefficients structure containing NOP
-    data = [OPCODES['nop']['imp'] for i in range(ADDR_WIDTH)]
-    for block in blocks:
-        block.assemble()
-        start_offset = block.offset
-        end_offset = start_offset + len(block)
-        # Insert each block into the coefficients structure
-        data[start_offset:end_offset] = block.exec_code
-        print(f"Assembling {len(block)} bytes at offset {hex(start_offset)}...")
+    if args.with_map:
+        if os.path.exists(args.with_map):
+            data = add_map(args.with_map, data)
+        else:
+            raise OSError('Map file not found.')
 
-    # Add the memory map, if it is supplied
+    if args.coe_only:
+        print('coe arg')
 
     # If directed to
 
