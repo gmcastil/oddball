@@ -89,8 +89,9 @@ I'll probably have to rewrite some portion of the assembler.
 If additional data are desired to be place in memory, a `.map` file of the
 following format can be provided as well:
 
-    $9000: $33
-    $9001: $ff
+    # Comments here
+    $9000      $33
+    $9001      $ff          # Or comments can go here too
 
 This would place the value $33 and $ff at addresses $9000 and $9001
 respectively.  Depending upon how annoying I find maintaining two different
@@ -110,6 +111,7 @@ where `file` is your input 6502 assembly source code.  Some supported options ar
     -m, --with-map      Use this file to place additional data into memory
     -o, --output        Output filename to use (optional).  Default is to use the
                         input filename with .mif.
+    -q, --quiet         Suppress output
 
 ## Tests
 
