@@ -745,7 +745,7 @@ def assemble(filename, quiet=True):
         # Insert each block into the coefficients structure
         data[start_offset:end_offset] = block.exec_code
         if not quiet:
-            print(f'Assembling {len(block)} bytes at offset'
+            print(f'Assembling {len(block)} bytes at offset '
                   f'{hex(start_offset)}...')
     return data
 
@@ -815,14 +815,17 @@ def main():
             raise OSError('Map file not found.')
 
     # Write out a .coe file
-    coe_file = os.path.splitext(args.filename)[0] + '.coe'
+    if args.output:
+        coe_file = os.path.splitext(args.output)[0] + '.coe'
+    else:
+        coe_file= os.path.splitext(args.filename)[0] + '.coe'
     if not args.quiet:
         print(f'Generating coefficients file at {coe_file}.')
     write_coefficients(coe_file, data)
 
     # Unless otherwise directed, generate a .mif file as well
     if not args.coe_only:
-        mif_file = os.path.splitext(args.filename)[0] + '.mif'
+        mif_file = os.path.splitext(coe_file)[0] + '.mif'
         if not args.quiet:
             print(f'Generating memory initialization file at {mif_file}.')
         write_mif(mif_file, data)
