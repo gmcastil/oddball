@@ -52,9 +52,6 @@ Since this is a strange use case, there are a couple of additional caveats:
 * The assembled output will always be 64KB in size, since that is the size of
   the 6502 address space
 * All non-program bytes will be populated with NOP (`0xEA`) opcodes
-* If the intent of the user is to simulate the 6502 address space, additional
-  bytes need to appear in the output, notably the address of the reset vector
-  and interrupt handling routines in addresses `$fffa` through `$ffff`.
 * Because the intent of the output products is to verify hardware behavior, no
   support for macros exists.
 
@@ -99,8 +96,8 @@ source files, I may implement some additional directives in the future.
 
 ## Usage
 
-Oddball was developed on Python 3.6 and may run just fine on earlier versions,
-but I haven't tested it.  To run from a command prompt, type:
+Oddball was developed on Python 3.6 and will not run on earlier versions (it
+uses a lot of fstrings).  To run from a command prompt, type:
 
     oddball [options] [file]
 
