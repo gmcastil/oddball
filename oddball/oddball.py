@@ -717,7 +717,7 @@ def write_mif(filename, data):
     """
     with open(filename, 'w') as mif_file:
         for byte in data:
-            bin_string = bin(byte)[2:]
+            bin_string = bin(byte)[2:].zfill(8)
             mif_file.write(bin_string + '\n')
 
 def assemble(filename, quiet=True):
